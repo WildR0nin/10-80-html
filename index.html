@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>10-80 Report Generator</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
+.container { max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:6px; }
+h1 { text-align:center; }
+label { font-weight:bold; display:block; margin-top:12px; }
+input, textarea, select { width:100%; padding:8px; margin-top:4px; }
+textarea { height:70px; }
+button { margin-top:15px; padding:10px 14px; font-size:16px; cursor:pointer; }
+#output { white-space:pre-wrap; border:1px solid #ccc; padding:15px; margin-top:20px; background:#fafafa; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>10-80 Report Generator</h1>
+
+<label>Pursuit Began / Initial Location</label>
+<input id="start">
+
+<label>Pursuit Ended / Final Location</label>
+<input id="end">
+
+<label>What happened during the chase?</label>
+<textarea id="chase"></textarea>
+
+<label>Outcome (Apprehended or Lost)</label>
+<select id="outcome">
+  <option value="apprehended">Apprehended</option>
+  <option value="lost">Lost</option>
+</select>
+
+<label>Vehicle Color</label>
+<input id="color">
+
+<label>Vehicle Model</label>
+<input id="vehicle">
+
+<label>Plate</label>
+<input id="plate">
+
+<label>Registered Owner</label>
+<input id="owner">
+
+<label>Number of Occupants</label>
+<input id="occupants">
+
+<label>Processed At (PD)</label>
+<input id="processed">
+
+<button onclick="generate()">Generate Report</button>
+<button onclick="window.print()">Print</button>
+
+<div id="output"></div>
+</div>
+
+<script>
+function generate() {
+  const outcomeVal = document.getElementById("outcome").value; // "apprehended" or "lost"
+
+  // Clean sentence depending on outcome
+  const endSentence = outcomeVal === "apprehended"
+    ? "The 10-80 ended with all suspects apprehended."
+    : "The 10-80 ended with suspects lost and officers disengaging.";
+
+  document.getElementById("output").textContent =
+`10-80
+
+LOCATION:
+Pursuit Began / Initial Location: ${start.value}
+Pursuit Ended / Final Location: ${end.value}
+
+PURSUIT INFORMATION:
+During regular patrol, we noticed that there was a vehicle breaking traffic laws. Upon attempting to pull them over, they did not even acknowledge it and refused to pull over their vehicle. With that they initiated a 10-80 with us pursuing the vehicle.
+The chase lasted for a bit of time until ${chase.value}
+${endSentence}
+
+VEHICLE INFORMATION:
+The vehicle we were pursuing was a ${color.value} ${vehicle.value}
+PLATE: ${plate.value}
+The vehicle was registered to ${owner.value}.
+There were ${occupants.value} occupants inside of the vehicle.
+After running the plate of the vehicle used in crime, it came back as not flagged stolen.
+
+MEDICAL ATTENTION:
+Due to no suspects or officers having any major injuries, everyone waived their rights to medical attention.
+
+PROCESSED:
+All of the apprehended suspects were processed at ${processed.value}.`;
+}
+</script>
+
+</body>
+</html>
