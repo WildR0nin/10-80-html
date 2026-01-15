@@ -107,6 +107,12 @@ button {
   <option value="reported stolen">Stolen</option>
 </select>
 
+<label>Was Medical Attention Required?</label>
+<select id="medical">
+  <option value="no">No</option>
+  <option value="yes">Yes</option>
+</select>
+
 <label>Processed At (PD)</label>
 <input id="processed">
 
@@ -120,10 +126,15 @@ button {
 function generate() {
   const outcomeVal = document.getElementById("outcome").value;
   const stolenVal = document.getElementById("stolen").value;
+  const medicalVal = document.getElementById("medical").value;
 
   const endSentence = outcomeVal === "apprehended"
     ? "The 10-80 ended with all suspects apprehended."
     : "The 10-80 ended with suspects lost and officers disengaging.";
+
+  const medicalText = medicalVal === "yes"
+    ? "MEDICAL ATTENTION:\nMedical attention was administered to ensure well being."
+    : "MEDICAL ATTENTION:\nDue to no suspects or officers having major injuries, all parties waived medical attention.";
 
   const processedText = outcomeVal === "apprehended"
     ? `PROCESSED:
@@ -149,8 +160,7 @@ The vehicle was registered to ${owner.value}.
 There were ${occupants.value} occupants inside the vehicle.
 After running the plate of the vehicle used in crime, it came back as ${stolenVal}.
 
-MEDICAL ATTENTION:
-Due to no suspects or officers having major injuries, all parties waived medical attention.
+${medicalText}
 
 ${processedText}`;
 }
