@@ -1,21 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>10-80 Report Generator</title>
+
 <style>
-body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
-.container { max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:6px; }
-h1 { text-align:center; }
-label { font-weight:bold; display:block; margin-top:12px; }
-input, textarea, select { width:100%; padding:8px; margin-top:4px; }
-textarea { height:70px; }
-button { margin-top:15px; padding:10px 14px; font-size:16px; cursor:pointer; }
-#output { white-space:pre-wrap; border:1px solid #ccc; padding:15px; margin-top:20px; background:#fafafa; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+h1 {
+  text-align: center;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 70px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 14px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#output {
+  white-space: pre-wrap;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 20px;
+  background: #fafafa;
+}
+
+/* Print styling */
+@media print {
+  button, input, textarea, select, label, h1 {
+    display: none;
+  }
+  .container {
+    border: none;
+  }
+}
 </style>
 </head>
-<body>
 
+<body>
 <div class="container">
 <h1>10-80 Report Generator</h1>
 
@@ -25,10 +77,10 @@ button { margin-top:15px; padding:10px 14px; font-size:16px; cursor:pointer; }
 <label>Pursuit Ended / Final Location</label>
 <input id="end">
 
-<label>What happened on the chase?</label>
+<label>What happened during the chase?</label>
 <textarea id="chase"></textarea>
 
-<label>Outcome (Apprehended or Lost)</label>
+<label>Outcome of the 10-80</label>
 <select id="outcome">
   <option value="apprehended">Apprehended</option>
   <option value="lost">Lost</option>
@@ -47,7 +99,13 @@ button { margin-top:15px; padding:10px 14px; font-size:16px; cursor:pointer; }
 <input id="owner">
 
 <label>Number of Occupants</label>
-<input id="occupants">
+<input id="occupants" type="number">
+
+<label>Vehicle Status</label>
+<select id="stolen">
+  <option value="not flagged stolen">Not Stolen</option>
+  <option value="reported stolen">Stolen</option>
+</select>
 
 <label>Processed At (PD)</label>
 <input id="processed">
@@ -60,12 +118,17 @@ button { margin-top:15px; padding:10px 14px; font-size:16px; cursor:pointer; }
 
 <script>
 function generate() {
-  const outcomeVal = document.getElementById("outcome").value; // "apprehended" or "lost"
+  const outcomeVal = document.getElementById("outcome").value;
+  const stolenVal = document.getElementById("stolen").value;
 
-  // Clean sentence depending on outcome
   const endSentence = outcomeVal === "apprehended"
     ? "The 10-80 ended with all suspects apprehended."
     : "The 10-80 ended with suspects lost and officers disengaging.";
+
+  const processedText = outcomeVal === "apprehended"
+    ? `PROCESSED:
+All apprehended suspects were processed at ${processed.value}.`
+    : "";
 
   document.getElementById("output").textContent =
 `10-80
@@ -75,22 +138,21 @@ Pursuit Began / Initial Location: ${start.value}
 Pursuit Ended / Final Location: ${end.value}
 
 PURSUIT INFORMATION:
-During patrol, we noticed that there was a vehicle breaking traffic laws. Upon attempting to pull suspects over, they did not even acknowledge it and refused to pull over their vehicle. With that they initiated a 10-80 with us pursuing the vehicle.
-during the chase ${chase.value}
+During patrol, officers observed a vehicle committing traffic violations. Upon attempting a traffic stop, the vehicle failed to yield, initiating a 10-80 pursuit.
+During the chase ${chase.value}
 ${endSentence}
 
 VEHICLE INFORMATION:
-The vehicle we were pursuing was a ${color.value} ${vehicle.value}
+The vehicle was a ${color.value} ${vehicle.value}
 PLATE: ${plate.value}
 The vehicle was registered to ${owner.value}.
-There were ${occupants.value} occupants inside of the vehicle.
-After running the plate of the vehicle used in crime, it came back as not flagged stolen.
+There were ${occupants.value} occupants inside the vehicle.
+After running the plate of the vehicle used in crime, it came back as ${stolenVal}.
 
 MEDICAL ATTENTION:
-Due to no suspects or officers having any major injuries, everyone waived their rights to medical attention.
+Due to no suspects or officers having major injuries, all parties waived medical attention.
 
-PROCESSED:
-All of the apprehended suspects were processed at ${processed.value}.`;
+${processedText}`;
 }
 </script>
 
